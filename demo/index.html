@@ -1,0 +1,1517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pilotlight Demo</title>
+<style>
+:root{
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  --work:#2f7cf6; --ask:#ef9a0b; --done:#22a046; --err:#e5484d; --idle:#8e8e93;
+
+  --page:#f6f5f2; --card-solid:#ffffff;
+  --ink:#1d1d1f; --ink-2:#5c5c63; --ink-3:#95959c; --line:rgba(0,0,0,.08);
+  --pop-bg:rgba(246,246,249,.82); --pop-edge:rgba(0,0,0,.14);
+  --card:rgba(255,255,255,.74); --card-edge:rgba(0,0,0,.06); --hover:rgba(0,0,0,.045);
+  --ask-tint:rgba(239,154,11,.09); --ask-edge:rgba(239,154,11,.38);
+  --code-bg:rgba(0,0,0,.055);
+  --menubar:rgba(255,255,255,.4); --menubar-ink:#111; --tray-hl:rgba(0,0,0,.11);
+  --btn:rgba(0,0,0,.065); --btn-ink:#1d1d1f; --primary:#0a84ff; --seg-on:#fff;
+  --win-chrome:#e8e8ea; --win-bg:#ffffff; --win-act:#efeff1; --win-side:#f6f6f7; --win-panel:#fafafa; --win-edge:rgba(0,0,0,.2);
+  --tk1:#af00db; --tk2:#c4511c; --tk3:#795e26; --tk4:#0451a5; --tk5:#098658;
+  --demo-bg:rgba(255,255,255,.76);
+  --wall:
+    radial-gradient(1100px 700px at 12% 8%, #ffd6c0 0%, transparent 60%),
+    radial-gradient(900px 700px at 88% 18%, #c6d5ff 0%, transparent 62%),
+    radial-gradient(1100px 800px at 55% 108%, #e6cdf6 0%, transparent 60%),
+    #efe8f1;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --work:#4b8dff; --ask:#ffaa1f; --done:#32c25a; --err:#ff5f57; --idle:#8e8e93;
+    --page:#111113; --card-solid:#1a1a1d;
+    --ink:#f2f2f4; --ink-2:#a6a6ae; --ink-3:#6f6f77; --line:rgba(255,255,255,.09);
+    --pop-bg:rgba(38,38,42,.80); --pop-edge:rgba(255,255,255,.14);
+    --card:rgba(255,255,255,.055); --card-edge:rgba(255,255,255,.06); --hover:rgba(255,255,255,.065);
+    --ask-tint:rgba(255,170,31,.10); --ask-edge:rgba(255,170,31,.38);
+    --code-bg:rgba(255,255,255,.075);
+    --menubar:rgba(18,18,22,.42); --menubar-ink:#f2f2f4; --tray-hl:rgba(255,255,255,.18);
+    --btn:rgba(255,255,255,.1); --btn-ink:#f2f2f4; --seg-on:rgba(255,255,255,.2);
+    --win-chrome:#2c2c30; --win-bg:#1e1e1f; --win-act:#2a2a2d; --win-side:#232325; --win-panel:#1a1a1b; --win-edge:rgba(0,0,0,.6);
+    --tk1:#c586c0; --tk2:#ce9178; --tk3:#dcdcaa; --tk4:#9cdcfe; --tk5:#b5cea8;
+    --demo-bg:rgba(30,30,34,.78);
+    --wall:
+      radial-gradient(1100px 700px at 12% 8%, #3b2347 0%, transparent 60%),
+      radial-gradient(900px 700px at 88% 18%, #0f2a57 0%, transparent 62%),
+      radial-gradient(1100px 800px at 55% 108%, #163c3b 0%, transparent 60%),
+      #0c0c13;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --work:#4b8dff; --ask:#ffaa1f; --done:#32c25a; --err:#ff5f57; --idle:#8e8e93;
+  --page:#111113; --card-solid:#1a1a1d;
+  --ink:#f2f2f4; --ink-2:#a6a6ae; --ink-3:#6f6f77; --line:rgba(255,255,255,.09);
+  --pop-bg:rgba(38,38,42,.80); --pop-edge:rgba(255,255,255,.14);
+  --card:rgba(255,255,255,.055); --card-edge:rgba(255,255,255,.06); --hover:rgba(255,255,255,.065);
+  --ask-tint:rgba(255,170,31,.10); --ask-edge:rgba(255,170,31,.38);
+  --code-bg:rgba(255,255,255,.075);
+  --menubar:rgba(18,18,22,.42); --menubar-ink:#f2f2f4; --tray-hl:rgba(255,255,255,.18);
+  --btn:rgba(255,255,255,.1); --btn-ink:#f2f2f4; --seg-on:rgba(255,255,255,.2);
+  --win-chrome:#2c2c30; --win-bg:#1e1e1f; --win-act:#2a2a2d; --win-side:#232325; --win-panel:#1a1a1b; --win-edge:rgba(0,0,0,.6);
+  --tk1:#c586c0; --tk2:#ce9178; --tk3:#dcdcaa; --tk4:#9cdcfe; --tk5:#b5cea8;
+  --demo-bg:rgba(30,30,34,.78);
+  --wall:
+    radial-gradient(1100px 700px at 12% 8%, #3b2347 0%, transparent 60%),
+    radial-gradient(900px 700px at 88% 18%, #0f2a57 0%, transparent 62%),
+    radial-gradient(1100px 800px at 55% 108%, #163c3b 0%, transparent 60%),
+    #0c0c13;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+[hidden]{display:none !important}
+button{font:inherit;color:inherit}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ic{width:16px;height:16px;flex:none}
+kbd{font:500 10.5px/1 var(--font);padding:2px 4px;border-radius:4px;background:var(--btn);color:var(--ink-2);box-shadow:inset 0 -1px 0 var(--line);font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* ───────── desktop ───────── */
+.desktop{position:relative;height:max(660px,min(100vh,940px));overflow:hidden;background:var(--wall);user-select:none;-webkit-user-select:none}
+.menubar{position:absolute;inset:0 0 auto 0;height:28px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 8px 0 14px;background:var(--menubar);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);color:var(--menubar-ink);font-size:13px;z-index:50}
+.mb-left{display:flex;align-items:center;gap:18px;white-space:nowrap;overflow:hidden;min-width:0}
+.mb-left .apple{width:15px;height:15px}
+.mb-left b{font-weight:700}
+.mb-right{display:flex;align-items:center;gap:12px;flex:none}
+.mb-right .sys{opacity:.92}
+.mb-right .batt{width:26px;height:13px}
+#clock{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.tray{height:22px;min-width:26px;padding:0 7px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;cursor:default}
+.tray:hover,.tray[aria-expanded="true"]{background:var(--tray-hl)}
+.pips{display:flex;align-items:center;gap:4px}
+.pip{width:7px;height:7px;border-radius:50%;flex:none}
+.pip.working{background:var(--work);animation:breathe 1.9s ease-in-out infinite}
+.pip.ask{background:var(--ask);width:8px;height:8px;animation:ring 1.6s ease-out infinite}
+.pip.done{background:var(--done)}
+.pip.error{background:var(--err)}
+.pip.idle{box-shadow:inset 0 0 0 1.4px currentColor;opacity:.5}
+.tray-more,.tray-num{font:600 11px/1 var(--font);font-variant-numeric:tabular-nums;margin-left:2px}
+.tray-num.ask{color:var(--ask)}
+
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.78)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ask) 75%,transparent)}75%,100%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ask) 0%,transparent)}}
+
+/* windows */
+.windows{position:absolute;inset:28px 0 0 0;z-index:1}
+.win{position:absolute;width:min(780px,58%);height:min(480px,56%);min-width:540px;background:var(--win-bg);border-radius:11px;box-shadow:0 0 0 .5px var(--win-edge),0 22px 60px rgba(0,0,0,.24);overflow:hidden;display:flex;flex-direction:column;font-size:11px;color:var(--ink-2);transition:box-shadow .25s}
+.win:not(.front){filter:saturate(.85)}
+.win.flash{animation:flash 1.1s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--work),0 0 0 .5px var(--win-edge),0 22px 60px rgba(0,0,0,.24)}100%{box-shadow:0 0 0 16px transparent,0 0 0 .5px var(--win-edge),0 22px 60px rgba(0,0,0,.24)}}
+.win-bar{height:30px;flex:none;background:var(--win-chrome);display:flex;align-items:center;position:relative;border-bottom:1px solid var(--line)}
+.lights{display:flex;gap:7px;padding-left:12px;position:relative;z-index:1}
+.lights i{width:11px;height:11px;border-radius:50%;background:var(--btn)}
+.win.front .lights i:nth-child(1){background:#ff5f57}
+.win.front .lights i:nth-child(2){background:#febc2e}
+.win.front .lights i:nth-child(3){background:#28c840}
+.win-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden}
+.win.front .win-title{color:var(--ink)}
+.win-body{flex:1;min-height:0;display:grid;grid-template-columns:36px 150px 1fr 36%}
+.w-act{background:var(--win-act);display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:12px}
+.w-act i{width:16px;height:16px;border-radius:4px;background:var(--btn)}
+.w-act i:first-child{background:color-mix(in srgb,var(--ink-2) 35%,transparent)}
+.w-side{background:var(--win-side);padding:10px 10px;border-right:1px solid var(--line);overflow:hidden;white-space:nowrap}
+.w-side-h{font-weight:700;font-size:10px;letter-spacing:.06em;color:var(--ink-3);margin-bottom:8px}
+.w-side div{padding:3px 0;overflow:hidden;text-overflow:ellipsis}
+.w-side .dir{color:var(--ink-3)}
+.w-editor{padding:0 14px;overflow:hidden;min-width:0}
+.w-tab{display:inline-block;margin:0 0 12px -14px;padding:7px 14px;background:var(--win-bg);border-right:1px solid var(--line);border-bottom:1.5px solid var(--primary);color:var(--ink);font-size:11px}
+.cl{display:flex;gap:6px;height:7px;margin:0 0 9px}
+.cl i{height:7px;border-radius:3px;opacity:.7;flex:none}
+.w-claude{background:var(--win-panel);border-left:1px solid var(--line);display:flex;flex-direction:column;gap:9px;padding:10px;min-width:0}
+.wc-h{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink);font-size:11px}
+.wc-h .ic{width:13px;height:13px}
+.wc-msg{display:flex;flex-direction:column;gap:5px}
+.wc-msg i{display:block;height:6px;border-radius:3px;background:var(--btn)}
+.wc-msg.user{align-items:flex-end}
+.wc-msg.user i{background:color-mix(in srgb,var(--primary) 22%,transparent)}
+.wc-status{margin-top:auto;border-radius:9px;padding:8px 9px;background:var(--card);border:1px solid var(--card-edge);display:flex;flex-direction:column;gap:5px;line-height:1.4;color:var(--ink-2)}
+.wc-status.ask{border-color:var(--ask-edge);background:linear-gradient(var(--ask-tint),var(--ask-tint)),var(--card)}
+.wc-status.error{border-color:color-mix(in srgb,var(--err) 40%,transparent)}
+.wc-row{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:600}
+.wc-status code{font:10.5px/1.4 var(--mono);background:var(--code-bg);padding:3px 5px;border-radius:5px;color:var(--ink);word-break:break-all}
+.wc-btns{display:flex;gap:5px}
+.wc-btns button{border:0;border-radius:5px;padding:3px 9px;font-size:10.5px;background:var(--btn);cursor:default}
+.wc-btns button:first-child{background:var(--primary);color:#fff}
+.wc-input{border:1px solid var(--line);border-radius:7px;padding:6px 8px;color:var(--ink-3)}
+
+/* dots used in the board */
+.dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.dot.working{background:var(--work);animation:breathe 1.9s ease-in-out infinite}
+.dot.ask{background:var(--ask);animation:ring 1.6s ease-out infinite}
+.dot.done{background:var(--done)}
+.dot.error{background:var(--err)}
+.dot.idle{box-shadow:inset 0 0 0 1.4px var(--idle)}
+
+/* popover */
+.pop{position:absolute;top:33px;right:8px;width:376px;max-width:calc(100% - 16px);max-height:calc(100% - 44px);display:flex;flex-direction:column;background:var(--pop-bg);-webkit-backdrop-filter:blur(40px) saturate(1.8);backdrop-filter:blur(40px) saturate(1.8);border-radius:14px;box-shadow:0 0 0 .5px var(--pop-edge),0 22px 64px rgba(0,0,0,.26),0 4px 14px rgba(0,0,0,.10);z-index:60;transform-origin:top right;visibility:hidden;opacity:0;transform:translateY(-4px) scale(.98);transition:opacity .14s ease,transform .14s ease,visibility 0s linear .14s;font-size:13px}
+.pop[data-open="true"]{visibility:visible;opacity:1;transform:none;transition-delay:0s}
+.view{display:flex;flex-direction:column;min-height:0;flex:1}
+.pop-head{display:flex;align-items:center;gap:8px;padding:11px 10px 8px 14px}
+.brand{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
+.brand .ic{width:15px;height:15px}
+.summary{margin-left:auto;font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.icon-btn{width:26px;height:26px;border-radius:7px;border:0;background:transparent;display:grid;place-items:center;color:var(--ink-2);cursor:default;flex:none}
+.icon-btn:hover{background:var(--hover);color:var(--ink)}
+.pop-body{overflow:auto;min-height:0;padding:0 8px 8px;overscroll-behavior:contain}
+.pop-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px 9px;border-top:1px solid var(--line);font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pop-foot .hints{display:flex;align-items:center;gap:3px;white-space:nowrap}
+
+.g-title{display:flex;align-items:center;justify-content:space-between;padding:12px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.g-title.ask{color:var(--ask)}
+.allclear{display:flex;align-items:center;gap:8px;margin:2px 0 0;padding:9px 10px;border-radius:10px;background:var(--card);border:1px solid var(--card-edge);color:var(--ink-2);font-size:12.5px}
+
+.ask-card{border-radius:11px;padding:10px 10px 10px 11px;margin:0 0 8px;border:1px solid var(--ask-edge);background:linear-gradient(var(--ask-tint),var(--ask-tint)),var(--card)}
+.ask-top,.s-l1{display:flex;align-items:baseline;gap:6px;min-width:0}
+.ask-top .dot{align-self:center;margin-right:2px}
+.proj{font-weight:600;font-size:13px;white-space:nowrap}
+.branch{font:11px var(--mono);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.time{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:8px}
+.ask-what{margin:7px 0 0;font-size:12px;color:var(--ink-2)}
+.chip{font:600 10px/1 var(--font);padding:3px 5px;border-radius:4px;background:var(--btn);color:var(--ink-2);margin-right:6px;vertical-align:1px;letter-spacing:.02em}
+.cmd{font:12px/1.45 var(--mono);background:var(--code-bg);border-radius:7px;padding:7px 9px;margin:6px 0 9px;white-space:pre-wrap;word-break:break-all;color:var(--ink)}
+.cmd .prompt{color:var(--ink-3)}
+.q{margin:6px 0 9px;padding:7px 10px;border-left:2px solid var(--ask);background:var(--code-bg);border-radius:0 7px 7px 0;font-size:12.5px;line-height:1.45;color:var(--ink)}
+.handoff{font-size:11.5px;color:var(--ink-2);margin:-2px 0 8px}
+.ask-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.btn{height:26px;padding:0 10px;border-radius:7px;border:0;background:var(--btn);color:var(--btn-ink);font:500 12px var(--font);display:inline-flex;align-items:center;gap:6px;cursor:default;white-space:nowrap}
+.btn:hover{filter:brightness(.95)}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.primary kbd{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}
+.btn.link{background:none;color:var(--primary);margin-left:auto;padding:0 4px}
+.btn .ic{width:12px;height:12px}
+
+.srow{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:start;width:100%;padding:8px;border:0;border-radius:9px;background:none;text-align:left;cursor:default;position:relative}
+.srow:hover{background:var(--hover)}
+.srow > .dot{margin-top:5px}
+.s-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.s-l2{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-l3{display:flex;gap:6px;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.s-l3 .add{color:var(--done)} .s-l3 .del{color:var(--err)}
+.srow.done.unread .s-l2{color:var(--ink)}
+.srow.done:not(.unread) .proj{font-weight:500}
+.errtext{color:var(--err) !important}
+.s-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.s-side .time{padding-left:0}
+.ticks{display:flex;align-items:flex-end;gap:1.5px;height:10px}
+.ticks i{width:2px;border-radius:1px;background:var(--ink-3);opacity:.45;height:5px}
+.ticks i.e{background:var(--work);opacity:1;height:10px}
+.ticks i.b{background:var(--ink-2);opacity:.85;height:8px}
+.numkey{position:absolute;right:8px;top:7px;opacity:0;transition:opacity .1s}
+.srow:hover .numkey,.srow:focus-visible .numkey{opacity:1}
+.srow:hover .s-side .time,.srow:focus-visible .s-side .time{opacity:0}
+.idle-toggle{display:flex;align-items:center;gap:10px;width:100%;padding:9px 8px;margin-top:4px;border:0;border-radius:9px;background:none;text-align:left;font-size:12px;color:var(--ink-3);cursor:default}
+.idle-toggle:hover{background:var(--hover);color:var(--ink-2)}
+.idle-toggle .chev{margin-left:auto;transition:transform .15s}
+.idle-toggle[aria-expanded="true"] .chev{transform:rotate(90deg)}
+
+/* settings */
+.set-h{padding:12px 8px 6px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.set-card{background:var(--card);border:1px solid var(--card-edge);border-radius:10px;padding:0 10px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:38px;padding:6px 0;font-size:12.5px}
+.set-row + .set-row{border-top:1px solid var(--line)}
+.set-row.sub{padding-left:14px;color:var(--ink-2)}
+.set-row .mono{font:12px var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.hookstate{display:flex;align-items:center;gap:7px}
+.switch{width:30px;height:18px;border-radius:9px;border:0;background:rgba(120,120,128,.32);position:relative;flex:none;cursor:default;transition:background .15s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.switch[aria-checked="true"]{background:var(--primary)}
+.switch[aria-checked="true"]::after{transform:translateX(12px)}
+.seg{display:inline-flex;background:var(--btn);border-radius:7px;padding:2px;gap:1px}
+.seg button{border:0;background:none;font:500 11.5px var(--font);padding:3px 9px;border-radius:5px;color:var(--ink-2);cursor:default}
+.seg button[aria-pressed="true"]{background:var(--seg-on);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+
+/* banners */
+.banners{position:absolute;top:36px;right:10px;width:min(350px,calc(100% - 20px));display:flex;flex-direction:column;gap:8px;z-index:70}
+.desktop.has-coach .banners{top:92px}
+.banner{display:grid;grid-template-columns:38px minmax(0,1fr);gap:11px;padding:11px 13px 11px 11px;border-radius:17px;background:var(--pop-bg);-webkit-backdrop-filter:blur(40px) saturate(1.8);backdrop-filter:blur(40px) saturate(1.8);box-shadow:0 0 0 .5px var(--pop-edge),0 14px 40px rgba(0,0,0,.2);cursor:default;animation:slideIn .38s cubic-bezier(.2,.9,.3,1.15)}
+.banner.out{animation:slideOut .22s ease-in forwards}
+@keyframes slideIn{from{transform:translateX(110%);opacity:.4}to{transform:none;opacity:1}}
+@keyframes slideOut{to{transform:translateX(110%);opacity:0}}
+.app-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(160deg,#2b2b33,#0d0d12);display:grid;place-items:center;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.15)}
+.app-icon .ic{width:22px;height:22px;filter:drop-shadow(0 0 6px rgba(70,140,255,.55))}
+.b-top{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-bottom:1px}
+.b-title{font-weight:600;font-size:13px}
+.b-text{font-size:12.5px;color:var(--ink-2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.b-text code{font:11.5px var(--mono)}
+.b-actions{display:flex;gap:6px;margin-top:8px}
+.b-actions .btn{height:24px;font-size:11.5px}
+
+/* coach mark */
+.coach{position:absolute;top:38px;right:8px;z-index:55;background:var(--ink);color:var(--page);font-size:12px;line-height:1.35;padding:8px 11px;border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:300px;animation:bob 2.4s ease-in-out infinite}
+.coach::before{content:"";position:absolute;top:-5px;right:var(--arrow-right,18px);border:6px solid transparent;border-bottom-color:var(--ink);border-top:0}
+.coach kbd{background:rgba(127,127,127,.3);color:inherit;box-shadow:none}
+@keyframes bob{50%{transform:translateY(3px)}}
+
+/* floating lights */
+.floaters{position:absolute;inset:28px 0 0 0;z-index:57;pointer-events:none}
+.pill{position:absolute;pointer-events:auto;display:flex;align-items:center;gap:1px;padding:4px 6px 4px 4px;border-radius:999px;background:var(--pop-bg);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);box-shadow:0 0 0 .5px var(--pop-edge),0 8px 24px rgba(0,0,0,.18);cursor:grab;touch-action:none;transition:opacity .25s,box-shadow .2s}
+.pill.vertical{flex-direction:column;padding:4px 4px 6px}
+.pill-lights{display:flex;align-items:center;gap:1px}
+.pill.vertical .pill-lights{flex-direction:column}
+.pill .grip{width:24px;height:24px;display:grid;place-items:center}
+.pill .grip .ic{width:15px;height:15px}
+.light{width:20px;height:20px;display:grid;place-items:center;border-radius:50%}
+.light:hover{background:var(--hover)}
+.light .pip{width:9px;height:9px}
+.light .pip.ask{width:10px;height:10px}
+.solo{position:absolute;pointer-events:auto;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--pop-bg);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);box-shadow:0 0 0 .5px var(--pop-edge),0 8px 24px rgba(0,0,0,.18);cursor:grab;touch-action:none;transition:opacity .25s,box-shadow .2s}
+.solo .pip{width:11px;height:11px}
+.solo .pip.ask{width:12px;height:12px}
+.pill.dim:not(:hover):not(:focus-visible),.solo.dim:not(:hover):not(:focus-visible){opacity:.55}
+.pill.dragging,.solo.dragging{cursor:grabbing;opacity:1;box-shadow:0 0 0 .5px var(--pop-edge),0 18px 44px rgba(0,0,0,.3)}
+.pill.drop-on{box-shadow:0 0 0 2px var(--primary),0 8px 24px rgba(0,0,0,.18)}
+.desktop.dragging-lights{cursor:grabbing}
+.menubar.drop-on{background:color-mix(in srgb,var(--primary) 28%,var(--menubar))}
+.dock-hint{position:absolute;top:4px;left:50%;transform:translateX(-50%);height:20px;padding:0 10px;border-radius:6px;display:none;align-items:center;font-size:12px;font-weight:500;background:var(--primary);color:#fff;z-index:51;pointer-events:none;white-space:nowrap}
+.desktop.dragging-lights .dock-hint{display:flex}
+.tray-flame{width:15px;height:15px}
+.peek{position:absolute;z-index:59;pointer-events:none;background:var(--ink);color:var(--page);font-size:11.5px;line-height:1.3;padding:5px 9px;border-radius:7px;white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis;transform:translate(-50%,-100%);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.peek.below{transform:translate(-50%,0)}
+.peek.to-left{transform:translate(-100%,-50%)}
+.peek.to-right{transform:translate(0,-50%)}
+
+/* demo chrome (not part of the product) */
+.demo-bar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;width:max-content;max-width:calc(100% - 24px);padding:6px;border-radius:14px;background:var(--demo-bg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 0 0 1px var(--line),0 10px 30px rgba(0,0,0,.14);z-index:80;font-size:12px}
+.demo-tag{font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding:0 6px 0 4px;border-right:1px dashed var(--line);margin-right:2px}
+.demo-bar .btn{height:26px}
+.demo-bar .sep{width:1px;height:18px;background:var(--line);margin:0 3px}
+.demo-bar a{color:var(--primary);text-decoration:none;padding:0 6px;white-space:nowrap}
+.toasts{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:85;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;width:max-content;max-width:calc(100% - 24px)}
+.toast{background:var(--ink);color:var(--page);font-size:12px;padding:7px 13px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.18);animation:toastIn .22s ease-out;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toast.mono{font-family:var(--mono);font-size:11.5px}
+.toast.out{opacity:0;transition:opacity .3s}
+@keyframes toastIn{from{transform:translateY(6px);opacity:0}}
+
+/* ───────── spec ───────── */
+.spec{max-width:1060px;margin:0 auto;padding:84px 20px 110px;line-height:1.5}
+.eyebrow{font:600 12px var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 14px}
+.spec h1{display:flex;align-items:center;gap:14px;font-size:clamp(36px,6vw,56px);letter-spacing:-.03em;line-height:1;margin:0 0 18px}
+.spec h1 .ic{width:.9em;height:.9em}
+.lede{font-size:clamp(17px,2.2vw,20px);color:var(--ink-2);max-width:700px;margin:0}
+.lede b{color:var(--ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:30px}
+.stat{padding:14px 16px;border-radius:14px;background:var(--card-solid);border:1px solid var(--line)}
+.stat b{display:block;font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--ink-3)}
+.stat.vs{background:transparent;border-style:dashed}
+.stat.vs b{color:var(--ink-3)}
+.sec{margin-top:84px}
+.sec h2{font:600 12px var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 6px}
+.sec h3{font-size:clamp(22px,3vw,28px);letter-spacing:-.02em;margin:0 0 8px;line-height:1.2}
+.sec .intro{color:var(--ink-2);max-width:680px;margin:0 0 26px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.fcard{padding:18px 18px 20px;border-radius:16px;background:var(--card-solid);border:1px solid var(--line)}
+.fcard h4{margin:14px 0 6px;font-size:15.5px;letter-spacing:-.01em}
+.fcard p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.fcard code{font:12.5px var(--mono)}
+.mini{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;min-height:30px;font-size:12px;color:var(--ink-2)}
+.mini .lg{display:flex;align-items:center;gap:6px}
+.mini .lg .pip{width:8px;height:8px}
+.mini .pip.idle{color:var(--ink)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card-solid)}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+.tbl th{text-align:left;font-weight:600;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:12px 16px;border-bottom:1px solid var(--line)}
+.tbl td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.tbl code{font:12.5px var(--mono);color:var(--ink)}
+.tbl .muted td{color:var(--ink-3)}
+.tbl .muted td:first-child{color:var(--ink-3);font-weight:500}
+.strike{text-decoration:line-through;text-decoration-color:var(--err);text-decoration-thickness:1.5px}
+.flow{display:flex;align-items:stretch;gap:0;margin:6px 0 14px}
+.node{flex:1;min-width:0;padding:14px 15px;border-radius:14px;background:var(--card-solid);border:1px solid var(--line)}
+.node b{display:block;font-size:14px;margin-bottom:3px}
+.node b code{font:600 13px var(--mono)}
+.node span{font-size:12.5px;color:var(--ink-2);display:block}
+.node.accent{border-color:color-mix(in srgb,var(--work) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--work) 12%,transparent)}
+.arrow{flex:0 0 54px;position:relative;display:flex;align-items:center;justify-content:center}
+.arrow::before{content:"";position:absolute;left:5px;right:9px;top:50%;height:1.5px;background:var(--ink-3)}
+.arrow::after{content:"";position:absolute;right:4px;top:calc(50% - 4px);border:4.5px solid transparent;border-left:6px solid var(--ink-3);border-right:0}
+.arrow span{position:relative;font-size:10.5px;color:var(--ink-3);transform:translateY(-12px)}
+.flow-back{font-size:13.5px;color:var(--ink-2);margin:0 0 28px;padding-left:2px}
+.budgets{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.budget{padding:14px 16px;border-radius:14px;border:1px solid var(--line)}
+.budget small{display:block;font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.budget b{display:block;font-size:20px;letter-spacing:-.02em;margin:3px 0 2px;font-variant-numeric:tabular-nums}
+.budget span{font-size:12.5px;color:var(--ink-2)}
+.fcard.wide{grid-column:1/-1}
+.mini-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px 4px 5px;border-radius:999px;border:1px solid var(--line);background:var(--page)}
+.mini-pill .ic{width:14px;height:14px}
+.mini-pill .pip.idle{color:var(--ink)}
+.later{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.later ul{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px}
+.later li{margin:5px 0}
+.later h4{margin:0;font-size:14px}
+.foot{margin-top:84px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+.foot code{font:12.5px var(--mono);color:var(--ink-2)}
+
+@media (max-width:980px){
+  .win-body{grid-template-columns:30px 1fr 42%}
+  .w-side{display:none}
+}
+@media (max-width:760px){
+  .mb-left span{display:none}
+  .win{width:94%;min-width:0;left:3% !important}
+  .win-body{grid-template-columns:1fr 50%}
+  .w-act{display:none}
+  .flow{flex-direction:column}
+  .arrow{flex:0 0 34px}
+  .arrow::before{left:50%;right:auto;top:4px;bottom:9px;width:1.5px;height:auto}
+  .arrow::after{left:calc(50% - 4px);right:auto;top:auto;bottom:4px;border:4.5px solid transparent;border-top:6px solid var(--ink-3);border-bottom:0}
+  .arrow span{transform:translateX(34px)}
+}
+@media (max-width:520px){
+  .mb-right .sys:not(.batt){display:none}
+  .demo-tag{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .pip.working,.pip.ask,.dot.working,.dot.ask,.coach{animation:none}
+  .banner,.banner.out,.toast,.win.flash{animation:none}
+  .pop{transition:none}
+}
+</style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-flame" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a5d4ff"/><stop offset=".55" stop-color="#3f8cff"/><stop offset="1" stop-color="#2758ff"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-flame" viewBox="0 0 24 24">
+    <path fill="url(#g-flame)" d="M12.2 2.2c.5 2.7 2 4.4 3.5 6.1 1.5 1.7 2.8 3.4 2.8 5.9a6.5 6.5 0 0 1-13 0c0-2.1 1-3.8 2.3-5.1.2 1.4.9 2.4 2 2.9-.3-3.5.7-6.8 2.4-9.8z"/>
+    <path fill="#e3f1ff" opacity=".9" d="M12 12.3c.9 1.2 2.3 2.2 2.3 3.9a2.3 2.3 0 0 1-4.6 0c0-1.5.9-2.7 2.3-3.9z"/>
+  </symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></g></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M8 16L16 8M9.5 8H16v6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 1.43c0 1.14-.5 2.27-1.18 3.08-.75.9-1.99 1.57-2.99 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.57-2.27 1.21-2.98.8-.94 2.14-1.64 3.25-1.68.03.13.05.28.05.43zm4.56 15.71c-.03.07-.46 1.58-1.52 3.12-.94 1.34-1.94 2.71-3.43 2.71-1.52 0-1.9-.88-3.63-.88-1.7 0-2.3.91-3.67.91-1.38 0-2.33-1.26-3.43-2.8-1.29-1.82-2.32-4.63-2.32-7.28 0-4.28 2.8-6.55 5.55-6.55 1.45 0 2.68.95 3.6.95.87 0 2.22-1.01 3.9-1.01.61 0 2.89.06 4.37 2.19-.13.09-2.38 1.37-2.38 4.19 0 3.26 2.85 4.42 2.96 4.45z"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><circle cx="12" cy="19.2" r="1.7" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M8.3 15.7a5.3 5.3 0 0 1 7.4 0M5.1 12.5a9.8 9.8 0 0 1 13.8 0M2 9.3a14.2 14.2 0 0 1 20 0"/></symbol>
+  <symbol id="i-batt" viewBox="0 0 28 14"><rect x=".75" y=".75" width="23" height="12.5" rx="3.6" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.2"/><rect x="2.6" y="2.6" width="15.5" height="8.8" rx="2" fill="currentColor"/><path d="M25.6 5v4" stroke="currentColor" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-cc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4.5" width="18" height="6" rx="3"/><rect x="3" y="13.5" width="18" height="6" rx="3"/></g><circle cx="17.5" cy="7.5" r="1.8" fill="currentColor"/><circle cx="6.5" cy="16.5" r="1.8" fill="currentColor"/></symbol>
+</svg>
+
+<!-- ═════════════ THE DEMO DESKTOP ═════════════ -->
+<section class="desktop has-coach" id="desktop" aria-label="Interactive demo of Pilotlight on a Mac desktop">
+  <header class="menubar">
+    <nav class="mb-left" aria-label="App menus">
+      <svg class="ic apple"><use href="#i-apple"/></svg>
+      <b>Code</b><span>File</span><span>Edit</span><span>Selection</span><span>View</span><span>Go</span><span>Run</span><span>Terminal</span><span>Window</span><span>Help</span>
+    </nav>
+    <div class="mb-right">
+      <button class="tray" id="tray" aria-expanded="false" aria-haspopup="dialog" aria-label="Pilotlight"><span class="pips" id="pips"></span></button>
+      <svg class="ic sys batt"><use href="#i-batt"/></svg>
+      <svg class="ic sys"><use href="#i-wifi"/></svg>
+      <svg class="ic sys"><use href="#i-cc"/></svg>
+      <span id="clock"></span>
+    </div>
+  </header>
+
+  <div class="windows" id="windows"></div>
+  <div class="floaters" id="floaters"></div>
+  <div class="dock-hint" id="dock-hint"></div>
+  <div class="peek" id="peek" hidden></div>
+
+  <div class="coach" id="coach">Your Claude sessions live here. Click, press <kbd>⌥</kbd> <kbd>Space</kbd>, or drag them anywhere.</div>
+
+  <div class="pop" id="pop" role="dialog" aria-label="Pilotlight" data-open="false">
+    <div class="view" id="v-board">
+      <div class="pop-head">
+        <span class="brand"><svg class="ic"><use href="#i-flame"/></svg>Pilotlight</span>
+        <span class="summary" id="summary"></span>
+        <button class="icon-btn" id="open-settings" aria-label="Settings"><svg class="ic"><use href="#i-sliders"/></svg></button>
+      </div>
+      <div class="pop-body" id="board"></div>
+      <div class="pop-foot"><span id="today"></span><span class="hints"><kbd>1</kbd>–<kbd>9</kbd> jump</span></div>
+    </div>
+
+    <div class="view" id="v-settings" hidden>
+      <div class="pop-head">
+        <button class="icon-btn" id="close-settings" aria-label="Back to sessions"><svg class="ic"><use href="#i-back"/></svg></button>
+        <span class="brand">Settings</span>
+      </div>
+      <div class="pop-body" id="settings">
+        <div class="set-h">Tap me on the shoulder when</div>
+        <div class="set-card">
+          <label class="set-row"><span>Claude needs permission</span><button class="switch" role="switch" data-pref="nPerm" aria-label="Claude needs permission"></button></label>
+          <label class="set-row"><span>Claude asks a question</span><button class="switch" role="switch" data-pref="nQuestion" aria-label="Claude asks a question"></button></label>
+          <label class="set-row"><span>A session finishes</span><button class="switch" role="switch" data-pref="nDone" aria-label="A session finishes"></button></label>
+          <label class="set-row"><span>A session fails</span><button class="switch" role="switch" data-pref="nError" aria-label="A session fails"></button></label>
+          <label class="set-row sub"><span>…but stay quiet if I’m already in that window</span><button class="switch" role="switch" data-pref="quietFocused" aria-label="Stay quiet in focused window"></button></label>
+        </div>
+
+        <div class="set-h">Lights</div>
+        <div class="set-card">
+          <div class="set-row"><span>Live in</span><div class="seg" data-pref="place"><button data-v="menubar">Menu bar</button><button data-v="floating">Floating</button></div></div>
+          <label class="set-row"><span>Dim floating lights when nothing needs me</span><button class="switch" role="switch" data-pref="dim" aria-label="Dim floating lights when nothing needs me"></button></label>
+          <div class="set-row"><span>Menu bar style</span><div class="seg" data-pref="style"><button data-v="lights">One per session</button><button data-v="single">Single</button></div></div>
+          <div class="set-row"><span>Sound</span><div class="seg" data-pref="sound"><button data-v="off">Off</button><button data-v="soft">Soft</button><button data-v="distinct">Distinct</button></div></div>
+        </div>
+
+        <div class="set-h">General</div>
+        <div class="set-card">
+          <div class="set-row"><span>Open board</span><span><kbd>⌥</kbd> <kbd>Space</kbd></span></div>
+          <div class="set-row"><span>Permission ask timeout</span><span class="mono">30 s → VS Code</span></div>
+          <label class="set-row"><span>Launch at login</span><button class="switch" role="switch" data-pref="login" aria-label="Launch at login"></button></label>
+        </div>
+
+        <div class="set-h">Claude Code</div>
+        <div class="set-card">
+          <div class="set-row"><span class="hookstate"><span class="dot done"></span>Hooks connected · 10 events</span><button class="btn" data-set="repair">Repair</button></div>
+        </div>
+
+        <div class="set-h">Footprint · live</div>
+        <div class="set-card">
+          <div class="set-row"><span>Memory</span><span class="mono" id="fp-mem">—</span></div>
+          <div class="set-row"><span>CPU</span><span class="mono">0.0 %</span></div>
+          <div class="set-row"><span>Timers while this is closed</span><span class="mono">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banners" id="banners" aria-live="polite"></div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <div class="demo-bar" id="demo-bar">
+    <span class="demo-tag">Demo</span>
+    <button class="btn" data-sim="permission">Permission ask</button>
+    <button class="btn" data-sim="question">Question</button>
+    <button class="btn" data-sim="finish">Finish one</button>
+    <button class="btn" data-sim="fail">Fail one</button>
+    <button class="btn" data-sim="new">New session</button>
+    <span class="sep"></span>
+    <button class="btn" id="pause">Pause</button>
+    <div class="seg" id="theme-seg" aria-label="Theme"><button data-v="auto">Auto</button><button data-v="light">Light</button><button data-v="dark">Dark</button></div>
+    <a href="#spec">Design notes ↓</a>
+  </div>
+</section>
+
+<!-- ═════════════ DESIGN NOTES ═════════════ -->
+<main class="spec" id="spec">
+  <p class="eyebrow">Design proposal · v1</p>
+  <h1><svg class="ic"><use href="#i-flame"/></svg>Pilotlight</h1>
+  <p class="lede">A pilot light burns all day on almost no fuel. This app does the same for your Claude Code sessions. Each session gets <b>one small light in the menu bar</b>. The lights stay quiet while Claude works. When a session needs you, you can <b>answer it right there</b> or <b>jump straight to that VS Code window</b>. There is no chat panel, because VS Code already has one.</p>
+
+  <div class="stats">
+    <div class="stat"><b>&lt; 25 MB</b><span>memory target</span></div>
+    <div class="stat"><b>0.0 %</b><span>CPU when nothing is happening</span></div>
+    <div class="stat"><b>0</b><span>timers or polling while the board is closed</span></div>
+    <div class="stat vs"><b>~94 MB · 8.1 %</b><span>Vibe Notch today (one <code>ps</code> sample on this Mac)</span></div>
+  </div>
+
+  <section class="sec">
+    <h2>What it does</h2>
+    <h3>Seven features in v1</h3>
+    <p class="intro">Every feature has to answer one of two questions: <em>does something need me?</em> or <em>take me there</em>. Anything that doesn't answer either is left out.</p>
+    <div class="grid3">
+      <article class="fcard">
+        <div class="mini">
+          <span class="lg"><span class="pip working"></span>working</span>
+          <span class="lg"><span class="pip ask"></span>needs you</span>
+          <span class="lg"><span class="pip done"></span>done</span>
+          <span class="lg"><span class="pip error"></span>failed</span>
+          <span class="lg"><span class="pip idle"></span>idle</span>
+        </div>
+        <h4>Lights instead of text</h4>
+        <p>One dot per session, with the ones that need you sorted first. You can tell how all your sessions are doing from the corner of your eye. If you'd rather have one dot, switch to “Single” for a single light plus a count.</p>
+      </article>
+      <article class="fcard">
+        <div class="mini"><span class="btn primary" style="height:24px">Allow <kbd>⏎</kbd></span><span class="btn" style="height:24px">Deny <kbd>⌫</kbd></span><span class="btn" style="height:24px">Always <kbd>A</kbd></span></div>
+        <h4>Answer permission asks in place</h4>
+        <p>Allow, deny, or save an “always allow” rule for that project, from the board or from the banner. If you don't answer within 30 s, the ask goes back to the normal VS Code prompt, so nothing is ever blocked for long.</p>
+      </article>
+      <article class="fcard">
+        <div class="mini"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> <span>→ that exact VS Code window</span></div>
+        <h4>Jump to VS Code for everything else</h4>
+        <p>When Claude asks a question, finishes, or fails, one click or a number key brings its VS Code window to the front. You answer Claude in VS Code, where you can see the full context.</p>
+      </article>
+      <article class="fcard">
+        <div class="mini"><span class="dot done"></span><span>Added Redis rate limiting · <span style="color:var(--done)">+84</span> <span style="color:var(--err)">−12</span></span></div>
+        <h4>One-line recaps</h4>
+        <p>When a session stops, the hook saves Claude's last line and runs <code>git diff --shortstat</code>. You see what changed without opening anything, and it costs almost nothing to collect.</p>
+      </article>
+      <article class="fcard">
+        <div class="mini"><span>banner?</span><span style="color:var(--ink-3)">not if you're already looking</span></div>
+        <h4>Quiet by default</h4>
+        <p>You get no banner if you're already in that window or the board is open. Banners for finished sessions only appear when you're working somewhere else. The default sound is one soft chime, or you can turn it off.</p>
+      </article>
+      <article class="fcard">
+        <div class="mini"><kbd>⌥</kbd><kbd>Space</kbd><kbd>⏎</kbd><kbd>⌫</kbd><kbd>A</kbd><kbd>1–9</kbd><kbd>esc</kbd></div>
+        <h4>Works from the keyboard</h4>
+        <p><kbd>⌥ Space</kbd> opens the board. <kbd>⏎</kbd> and <kbd>⌫</kbd> answer the oldest ask, and <kbd>1</kbd>–<kbd>9</kbd> jump to a session. You can handle an ask without touching the mouse.</p>
+      </article>
+      <article class="fcard wide">
+        <div class="mini"><span class="mini-pill"><svg class="ic"><use href="#i-flame"/></svg><span class="pip ask"></span><span class="pip working"></span><span class="pip done"></span><span class="pip idle"></span></span><span>drag out of the menu bar · snap to any edge · pull one light out to pin it</span></div>
+        <h4>Put the lights anywhere</h4>
+        <p>Drag the lights out of the menu bar and they become a floating strip. Snap it to an edge, where it turns vertical on the sides, or pull a single light out to keep one session next to the code you're watching. Drop either one on the menu bar to dock it again. The strip dims when nothing needs you. This helps on external monitors, and on MacBooks where the notch hides menu bar icons once there are too many. It's one borderless <code>NSPanel</code> that shows on every Space and in full screen, needs no Accessibility permission, and uses no extra CPU when idle.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>What I cut on purpose</h2>
+    <h3>Why it uses less than Vibe Notch</h3>
+    <p class="intro">Most of an app's memory and idle CPU goes to keeping a second UI alive and in sync. Pilotlight doesn't have one.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Cut</th><th>Why</th><th>Instead</th></tr></thead>
+        <tbody>
+          <tr><td><span class="strike">Chat in the notch</span></td><td>A second chat needs a web view, has to parse the transcript, and has to keep state in sync. VS Code already has a full chat panel.</td><td>Jump to the right window, with the Claude panel already focused.</td></tr>
+          <tr><td><span class="strike">Notch-only UI</span></td><td>External monitors and older Macs have no notch. Drawing over it means keeping an overlay window open all the time.</td><td>A standard menu bar item (<code>NSStatusItem</code>) that works on every display.</td></tr>
+          <tr><td><span class="strike">Live transcript / streaming</span></td><td>It means constant redraws and re-reading JSONL files.</td><td>One activity line per tool call, plus a recap when the session ends.</td></tr>
+          <tr><td><span class="strike">Process scanning</span></td><td>Polling wakes the CPU even when nothing is happening.</td><td>Claude Code's own hooks send events to the app, and the app waits on a socket.</td></tr>
+          <tr><td><span class="strike">History &amp; analytics</span></td><td>They're nice, but storage and UI keep growing.</td><td>A single line in the footer with today's count.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>How it stays light</h2>
+    <h3>Driven by events, with nothing in between</h3>
+    <p class="intro">The app and the hook are the same small Swift binary. When Claude Code runs it as a hook, it sends one line and exits. When you open it from Finder, it's the menu bar app.</p>
+    <div class="flow">
+      <div class="node"><b>Claude Code</b><span>one per VS Code window</span></div>
+      <div class="arrow"><span>hook</span></div>
+      <div class="node"><b><code>pilot emit</code></b><span>writes 1 JSON line and exits in &lt; 5 ms. Silent if the app isn't running.</span></div>
+      <div class="arrow"><span>socket</span></div>
+      <div class="node accent"><b>Pilotlight.app</b><span>Swift + AppKit. Sleeps until a line arrives on <code>~/.pilotlight/sock</code>.</span></div>
+      <div class="arrow"><span>draws</span></div>
+      <div class="node"><b>Menu bar · banners</b><span>Core Animation layers, so there's no redraw loop</span></div>
+    </div>
+    <p class="flow-back">↩ Permission asks are the only round trip. The hook waits on the socket for Allow or Deny for up to 30 s, prints the decision for Claude Code, and exits.</p>
+    <div class="budgets">
+      <div class="budget"><small>Memory</small><b>&lt; 25 MB</b><span>no web view, no Electron</span></div>
+      <div class="budget"><small>Idle CPU</small><b>0.0 %</b><span>blocked on a socket read</span></div>
+      <div class="budget"><small>Hook cost</small><b>&lt; 5 ms</b><span>per event, never blocks Claude</span></div>
+      <div class="budget"><small>App size</small><b>&lt; 5 MB</b><span>AppKit + SwiftUI only</span></div>
+      <div class="budget"><small>Dependencies</small><b>0</b><span>hotkey via Carbon <code>RegisterEventHotKey</code></span></div>
+      <div class="budget"><small>Timers</small><b>1</b><span>the elapsed clock, only while the board is open</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Wiring</h2>
+    <h3>Which hook drives each light</h3>
+    <p class="intro">Pilotlight registers 8 hook events in <code>~/.claude/settings.json</code>, about half as many as Vibe Notch did, so there are fewer process launches. Menu bar lights are drawn as a still image, because macOS re-snapshots a status item on every frame of an animation. The breathing animation only runs in the floating strip.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Hook</th><th>Light</th><th>What you see</th></tr></thead>
+        <tbody>
+          <tr><td><code>SessionStart</code></td><td><span class="pip idle" style="display:inline-block;color:var(--ink)"></span> appears</td><td>A new ring. The project name comes from <code>cwd</code>, and the branch from <code>.git/HEAD</code>.</td></tr>
+          <tr><td><code>UserPromptSubmit</code></td><td><span class="pip working" style="display:inline-block"></span> blue, breathing</td><td>The session counts as working, and its timer starts.</td></tr>
+          <tr><td><code>PreToolUse</code></td><td>—</td><td>The activity line (“Editing auth.ts”) and one tick in the sparkline</td></tr>
+          <tr><td><code>PostToolUse</code></td><td>—</td><td>Clears an ask once you've answered it in VS Code</td></tr>
+          <tr><td><code>PermissionRequest</code></td><td><span class="pip ask" style="display:inline-block"></span> amber</td><td>Allow / Deny / Always. If you're already in that session's window, it steps aside immediately. Otherwise it waits up to 30 s, then hands the ask back to VS Code.</td></tr>
+          <tr><td><code>PreToolUse</code> (AskUserQuestion), or a <code>Stop</code> whose last line is a question</td><td><span class="pip ask" style="display:inline-block"></span> amber</td><td>“Asked you something” plus the question, and a button to reply in VS Code</td></tr>
+          <tr><td><code>Stop</code></td><td><span class="pip done" style="display:inline-block"></span> green</td><td>A recap: Claude's last line and the diff stats</td></tr>
+          <tr><td><code>StopFailure</code></td><td><span class="pip error" style="display:inline-block"></span> red</td><td>The reason, for example 529 overloaded or a usage limit</td></tr>
+          <tr><td><code>SessionEnd</code></td><td>removed</td><td>The light goes away.</td></tr>
+          <tr class="muted"><td>Notification, Subagent*, PostToolUseFailure, Pre/PostCompact, PermissionDenied</td><td colspan="2">Not registered in v1. Fewer events means fewer process launches.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Scope</h2>
+    <h3>Later, maybe, and never</h3>
+    <div class="later" style="margin-top:20px">
+      <div class="fcard"><h4>Later, maybe</h4><ul><li>A small editor for per-project “always allow” rules</li><li>Sessions running in Terminal / iTerm and Cursor windows</li><li>Snooze an ask for 10 minutes</li><li>A light that follows its VS Code window around. It needs the Accessibility permission, so it's not in v1.</li></ul></div>
+      <div class="fcard"><h4>Never</h4><ul><li>A chat box, in any form</li><li>Showing token-by-token streaming</li><li>Anything that has to poll</li></ul></div>
+      <div class="fcard"><h4>Build plan</h4><ul><li>One Swift package with two entry points: the app, and <code>pilot emit</code></li><li>An installer that adds the hooks next to the existing Vibe Notch ones, so both apps can run side by side while you switch over</li><li>Signed and notarized, with a Sparkle feed for updates</li></ul></div>
+    </div>
+  </section>
+
+  <p class="foot">This is a mockup in a single HTML file, and everything above the fold is simulated. In the real app, the light is drawn natively by <code>NSStatusItem</code>, the board is an <code>NSPopover</code>, and banners come from <code>UNUserNotificationCenter</code>.</p>
+</main>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const now = () => Date.now();
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const base = p => p.split('/').pop();
+
+  // ───────── demo data ─────────
+  const PROJECTS = [
+    { key: 'web-app', branch: 'feat/onboarding',
+      files: ['src/app/onboarding/page.tsx', 'src/app/onboarding/steps.tsx', 'src/lib/analytics.ts', 'prisma/schema.prisma', 'src/components/Stepper.tsx'],
+      cmds: ['pnpm lint', 'pnpm test onboarding', 'pnpm tsc --noEmit'], terms: ['useOnboarding', 'trackEvent'], hosts: ['nextjs.org/docs'],
+      perm: { tool: 'Bash', cmd: 'npm run db:migrate' },
+      question: 'Figma has 5 onboarding steps but the spec says 4. Which one should I build?',
+      recaps: ['Built the 4-step onboarding flow with progress saving', 'Wired onboarding events into analytics'] },
+    { key: 'api-gateway', branch: 'main',
+      files: ['src/middleware/auth.ts', 'src/routes/v2/users.ts', 'src/lib/ratelimit.ts', 'test/auth.spec.ts'],
+      cmds: ['npm test -- auth', 'npx tsc -p .'], terms: ['verifyToken', '/v1/'], hosts: ['datatracker.ietf.org'],
+      perm: { tool: 'Bash', cmd: 'docker compose up -d redis' },
+      question: 'Should I keep the /v1 routes as aliases, or delete them in this PR?',
+      recaps: ['Added Redis rate limiting to /login and /token', 'Moved JWT checks into one middleware'] },
+    { key: 'claude-status', branch: 'main',
+      files: ['Sources/Pilotlight/StatusItem.swift', 'Sources/Pilotlight/SocketServer.swift', 'Sources/pilot/Emit.swift', 'Package.swift'],
+      cmds: ['swift build -c release', 'swift test'], terms: ['NSStatusItem', 'DispatchSource'], hosts: ['developer.apple.com'],
+      perm: { tool: 'Bash', cmd: 'rm -rf .build && swift build' },
+      question: 'Should the hook binary live inside the app bundle or in ~/.local/bin?',
+      recaps: ['Wired the Unix-socket listener to the status item', 'Added the PermissionRequest round trip'] },
+    { key: 'mobile-app', branch: 'fix/push-tokens',
+      files: ['app/services/push.ts', 'app/hooks/useNotifications.ts', 'ios/Podfile'],
+      cmds: ['npx expo prebuild', 'yarn test push'], terms: ['expoPushToken'], hosts: ['docs.expo.dev'],
+      perm: { tool: 'Bash', cmd: 'pod install --repo-update' },
+      question: 'iOS refreshes the token on every launch. Cache it in SecureStore or MMKV?',
+      recaps: ['Fixed duplicate push tokens on cold start'] },
+    { key: 'docs-site', branch: 'content/pricing',
+      files: ['content/pricing.mdx', 'components/PlanTable.tsx', 'content/faq.mdx'],
+      cmds: ['pnpm build'], terms: ['PlanTable'], hosts: ['stripe.com/pricing'],
+      perm: { tool: 'WebFetch', cmd: 'https://stripe.com/pricing' },
+      question: 'Should the annual plan be the default on the toggle?',
+      recaps: ['Rewrote the pricing page and plan table'] },
+    { key: 'infra', branch: 'chore/terraform',
+      files: ['modules/vpc/main.tf', 'modules/security/main.tf', 'envs/prod.tfvars'],
+      cmds: ['terraform plan', 'tflint'], terms: ['aws_security_group'], hosts: ['registry.terraform.io'],
+      perm: { tool: 'Bash', cmd: 'terraform apply -auto-approve' },
+      question: 'Prod and staging share one NAT gateway. Split them?',
+      recaps: ['Split the VPC module into networking + security'] },
+  ];
+  const ERRORS = ['API overloaded (529), stopped mid-task', 'Usage limit reached, resets at 4:00 PM', 'Hook timed out after 60 s'];
+  const VERB = { Edit: 'Editing', Read: 'Reading', Bash: 'Running', Grep: 'Searching', Web: 'Fetching', Task: '', Think: '' };
+
+  function activityFor(p) {
+    const r = Math.random();
+    if (r < .32) return { tool: 'Edit', text: pick(p.files) };
+    if (r < .58) return { tool: 'Read', text: pick(p.files) };
+    if (r < .72) return { tool: 'Bash', text: pick(p.cmds) };
+    if (r < .82) return { tool: 'Grep', text: `"${pick(p.terms)}"` };
+    if (r < .88) return { tool: 'Web', text: pick(p.hosts) };
+    if (r < .94) return { tool: 'Task', text: '2 subagents exploring' };
+    return { tool: 'Think', text: 'Planning the next step…' };
+  }
+  const tickType = t => t === 'Edit' ? 'e' : t === 'Bash' ? 'b' : 'r';
+
+  // ───────── state ─────────
+  const prefs = { nPerm: true, nQuestion: true, nDone: true, nError: true, quietFocused: true, place: 'menubar', dim: true, style: 'lights', sound: 'soft', login: true };
+  let sessions = [], seq = 0, popOpen = false, settingsOpen = false, idleOpen = false, paused = false, simT = 0, nextRandom = 42;
+  let focusedId = null, zOrder = [], coachShown = true;
+  let popAnchor = null, pill = null, drag = null, lastDragEnd = 0, tornOnce = false, trayAs = '';
+  const solos = {};
+  let sessionsToday = 11, claudeSecs = 2 * 3600 + 41 * 60;
+  const wins = {};
+
+  const desktop = $('#desktop'), tray = $('#tray'), pipsEl = $('#pips'), pop = $('#pop'), board = $('#board');
+  const bannersEl = $('#banners'), toastsEl = $('#toasts'), winsEl = $('#windows'), coach = $('#coach');
+  const floatersEl = $('#floaters'), peek = $('#peek'), dockHint = $('#dock-hint'), menubar = $('.menubar');
+
+  const byId = id => sessions.find(s => s.id === id);
+  const byKey = k => sessions.find(s => s.p.key === k);
+  const RANK = { ask: 0, error: 1, working: 2, done: 3, idle: 4 };
+  const ordered = () => [...sessions].sort((a, b) => RANK[a.state] - RANK[b.state] || (a.state === 'ask' ? a.since - b.since : a.n - b.n));
+
+  function makeSession(p, state, agoSec = 0) {
+    const s = { id: 's' + (++seq), n: seq, p, state, since: now() - agoSec * 1000, act: activityFor(p), ticks: [], ask: null, recap: null, err: null, unread: false, nextAct: now() + rand(800, 2400), file: p.files[0] };
+    for (let i = 0; i < 12; i++) s.ticks.push(tickType(activityFor(p).tool));
+    sessions.push(s);
+    createWindow(s);
+    return s;
+  }
+
+  // ───────── time formatting ─────────
+  function dur(ms) {
+    const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+    return h ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}:${String(s).padStart(2, '0')}`;
+  }
+  function ago(ms) {
+    const t = Math.floor(ms / 1000);
+    if (t < 45) return 'just now';
+    const m = Math.round(t / 60);
+    return m < 60 ? `${m}m ago` : `${Math.floor(m / 60)}h ago`;
+  }
+  const fmt = (kind, since) => kind === 'ago' ? ago(now() - since) : kind === 'wait' ? `waiting ${dur(now() - since)}` : dur(now() - since);
+
+  // ───────── transitions ─────────
+  function setState(s, state, kind) {
+    const workedFor = now() - s.since;
+    s.state = state;
+    s.since = now();
+    if (state === 'working') { s.ask = null; s.err = null; s.recap = null; s.unread = false; s.nextAct = now() + rand(900, 2200); }
+    if (state === 'ask') s.ask = kind === 'question' ? { kind: 'question', text: s.p.question } : { kind: 'permission', tool: s.p.perm.tool, cmd: s.p.perm.cmd, handedOff: false };
+    if (state === 'done') { s.recap = { text: pick(s.p.recaps), files: 1 + Math.floor(rand(0, 6)), add: Math.floor(rand(12, 240)), del: Math.floor(rand(2, 60)), took: workedFor }; s.unread = true; }
+    if (state === 'error') s.err = pick(ERRORS);
+    if (state === 'idle') s.unread = false;
+    render();
+    if (state === 'ask') notify(s, s.ask.kind);
+    if (state === 'done') notify(s, 'done');
+    if (state === 'error') notify(s, 'error');
+  }
+
+  function resolveAsk(s, decision) {
+    if (!s || s.state !== 'ask' || s.ask.kind !== 'permission') return;
+    const { tool, cmd } = s.ask;
+    if (decision === 'always') toast(`Saved to ${s.p.key}/.claude/settings.local.json → allow ${tool}(${cmd})`, true);
+    if (decision === 'deny') toast('Denied. Claude will try another way.');
+    s.act = decision === 'deny' ? { tool: 'Think', text: 'Permission denied, rethinking…' } : { tool, text: cmd };
+    s.ticks.push(tickType(s.act.tool));
+    removeBannersFor(s.id);
+    setState(s, 'working');
+  }
+
+  function jump(s) {
+    if (!s) return;
+    closePop();
+    raise(s.id, true);
+    markSeen(s);
+    toast(`open -a "Visual Studio Code" ~/dev/${s.p.key}`, true);
+  }
+
+  function markSeen(s) {
+    removeBannersFor(s.id);
+    if (s.state === 'done' || s.state === 'error') { s.state = 'idle'; s.since = now(); s.unread = false; render(); }
+  }
+
+  // ───────── notifications ─────────
+  const KIND_PREF = { permission: 'nPerm', question: 'nQuestion', done: 'nDone', error: 'nError' };
+  const KIND_LABEL = { permission: 'needs permission', question: 'asks a question', done: 'finishes', error: 'fails' };
+  function notify(s, kind) {
+    if (!prefs[KIND_PREF[kind]]) return toast(`No banner: notifications for “${KIND_LABEL[kind]}” are off`);
+    if (popOpen) return toast('No banner: the board is already open');
+    if (prefs.quietFocused && focusedId === s.id) return toast(`No banner: you're already in ${s.p.key}`);
+    chime(kind);
+    showBanner(s, kind);
+  }
+
+  function showBanner(s, kind) {
+    let title, text, actions = '';
+    if (kind === 'permission') {
+      title = `${s.p.key} needs permission`; text = `${s.ask.tool}: <code>${esc(s.ask.cmd)}</code>`;
+      actions = `<button class="btn primary" data-b="allow">Allow</button><button class="btn" data-b="deny">Deny</button>`;
+    } else if (kind === 'question') {
+      title = `${s.p.key} asked you something`; text = esc(s.ask.text);
+    } else if (kind === 'done') {
+      title = `${s.p.key} finished`; text = `${esc(s.recap.text)} · +${s.recap.add} −${s.recap.del}`;
+    } else {
+      title = `${s.p.key} stopped`; text = esc(s.err);
+    }
+    const b = document.createElement('div');
+    b.className = 'banner'; b.dataset.id = s.id; b.setAttribute('role', 'status');
+    b.innerHTML = `<div class="app-icon"><svg class="ic"><use href="#i-flame"/></svg></div>
+      <div><div class="b-top"><span>PILOTLIGHT</span><span>now</span></div><div class="b-title">${esc(title)}</div><div class="b-text">${text}</div>${actions ? `<div class="b-actions">${actions}</div>` : ''}</div>`;
+    b.addEventListener('click', e => {
+      const a = e.target.closest('[data-b]');
+      if (a) resolveAsk(s, a.dataset.b); else jump(s);
+      dismiss(b);
+    });
+    let timer = setTimeout(() => dismiss(b), 7000);
+    b.addEventListener('mouseenter', () => clearTimeout(timer));
+    b.addEventListener('mouseleave', () => { timer = setTimeout(() => dismiss(b), 2500); });
+    bannersEl.prepend(b);
+    while (bannersEl.children.length > 3) bannersEl.lastElementChild.remove();
+  }
+  function dismiss(b) { if (!b.isConnected || b.classList.contains('out')) return; b.classList.add('out'); setTimeout(() => b.remove(), 230); }
+  function removeBannersFor(id) { $$(`.banner[data-id="${id}"]`, bannersEl).forEach(dismiss); }
+
+  let ac;
+  function chime(kind) {
+    if (prefs.sound === 'off') return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state !== 'running') return;
+      const notes = prefs.sound === 'distinct'
+        ? { permission: [880, 1175], question: [784, 988], done: [659, 988], error: [392, 294] }[kind]
+        : [988, 1319];
+      const t0 = ac.currentTime;
+      notes.forEach((f, i) => {
+        const o = ac.createOscillator(), g = ac.createGain(), t = t0 + i * .09;
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.05, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + .38);
+        o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .4);
+      });
+    } catch (e) { /* audio is optional */ }
+  }
+  document.addEventListener('pointerdown', () => {
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch (e) {}
+  }, { once: true });
+
+  function toast(msg, mono = false) {
+    const t = document.createElement('div');
+    t.className = 'toast' + (mono ? ' mono' : '');
+    t.textContent = msg;
+    toastsEl.appendChild(t);
+    while (toastsEl.children.length > 2) toastsEl.firstElementChild.remove();
+    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, 2800);
+  }
+
+  // ───────── menu bar lights ─────────
+  // keyed, so a light's breathing animation doesn't restart on every update
+  function syncLights(box, list, wrap) {
+    $$(':scope > .tray-more', box).forEach(el => el.remove());
+    $$(':scope > [data-id]', box).forEach(el => { if (!list.some(s => s.id === el.dataset.id)) el.remove(); });
+    list.forEach((s, i) => {
+      let el = box.querySelector(`:scope > [data-id="${s.id}"]`);
+      if (!el) {
+        el = document.createElement('span');
+        el.dataset.id = s.id;
+        if (wrap) { el.className = 'light'; el.innerHTML = '<span class="pip"></span>'; }
+      }
+      const pip = wrap ? el.firstElementChild : el;
+      if (pip.className !== 'pip ' + s.state) pip.className = 'pip ' + s.state;
+      if (box.children[i] !== el) box.insertBefore(el, box.children[i] || null);
+    });
+  }
+
+  function renderTray() {
+    const order = ordered();
+    const asks = sessions.filter(s => s.state === 'ask').length;
+    const as = prefs.place === 'floating' ? 'floating' : prefs.style;
+    if (as !== trayAs) { pipsEl.innerHTML = ''; trayAs = as; }
+    if (as === 'floating') {
+      pipsEl.innerHTML = `<svg class="ic tray-flame"><use href="#i-flame"/></svg>${asks ? `<span class="tray-num ask">${asks}</span>` : ''}`;
+    } else if (as === 'single') {
+      const top = order[0];
+      const live = sessions.filter(s => s.state !== 'idle').length;
+      pipsEl.innerHTML = `<span class="pip ${top ? top.state : 'idle'}"></span><span class="tray-num ${asks ? 'ask' : ''}">${asks || live || ''}</span>`;
+    } else {
+      syncLights(pipsEl, order.slice(0, 6), false);
+      if (order.length > 6) pipsEl.insertAdjacentHTML('beforeend', `<span class="tray-more">+${order.length - 6}</span>`);
+    }
+    tray.setAttribute('aria-label', `Pilotlight: ${summaryText()}`);
+  }
+
+  function summaryText() {
+    const asks = sessions.filter(s => s.state === 'ask').length;
+    const working = sessions.filter(s => s.state === 'working').length;
+    if (asks) return `${working} working · ${asks} need${asks === 1 ? 's' : ''} you`;
+    if (working) return `${working} working · nothing needs you`;
+    return 'All quiet';
+  }
+
+  // ───────── board ─────────
+  const actHTML = a => `<span class="chip">${a.tool}</span>${esc(VERB[a.tool] ? `${VERB[a.tool]} ${a.tool === 'Edit' || a.tool === 'Read' ? base(a.text) : a.text}` : a.text)}`;
+  const ticksHTML = s => s.ticks.slice(-18).map(t => `<i class="${t}"></i>`).join('');
+  const head = s => `<span class="s-l1"><span class="proj">${s.p.key}</span><span class="branch">${s.p.branch}</span></span>`;
+  const timeSpan = (s, kind) => `<span class="time" data-since="${s.since}" data-fmt="${kind}">${fmt(kind, s.since)}</span>`;
+
+  function askHTML(s, n, first) {
+    const a = s.ask;
+    let body, actions;
+    if (a.kind === 'permission') {
+      body = `<div class="ask-what">Wants to use <span class="chip">${a.tool}</span></div><pre class="cmd">${a.tool === 'Bash' ? '<span class="prompt">$ </span>' : ''}${esc(a.cmd)}</pre>`;
+      actions = a.handedOff
+        ? `<div class="handoff">No answer in 30 s, so the prompt went back to VS Code.</div>
+           <div class="ask-actions"><button class="btn primary" data-act="jump">Answer in VS Code <svg class="ic"><use href="#i-out"/></svg>${n ? `<kbd>${n}</kbd>` : ''}</button></div>`
+        : `<div class="ask-actions">
+             <button class="btn primary" data-act="allow">Allow${first ? ' <kbd>⏎</kbd>' : ''}</button>
+             <button class="btn" data-act="deny">Deny${first ? ' <kbd>⌫</kbd>' : ''}</button>
+             <button class="btn" data-act="always" title="Save an allow rule for this project">Always${first ? ' <kbd>A</kbd>' : ''}</button>
+             <button class="btn link" data-act="jump">Open${n ? ` <kbd>${n}</kbd>` : ''}</button>
+           </div>`;
+    } else {
+      body = `<div class="ask-what">Asked you</div><blockquote class="q">${esc(a.text)}</blockquote>`;
+      actions = `<div class="ask-actions"><button class="btn primary" data-act="jump">Reply in VS Code <svg class="ic"><use href="#i-out"/></svg>${first ? '<kbd>⏎</kbd>' : n ? `<kbd>${n}</kbd>` : ''}</button></div>`;
+    }
+    return `<article class="ask-card" data-id="${s.id}" data-n="${n}">
+      <div class="ask-top"><span class="dot ask"></span><span class="proj">${s.p.key}</span><span class="branch">${s.p.branch}</span>${timeSpan(s, 'wait')}</div>
+      ${body}${actions}</article>`;
+  }
+
+  function rowHTML(s, n) {
+    const kbd = n ? `<kbd class="numkey">${n}</kbd>` : '';
+    if (s.state === 'working') return `<button class="srow" data-act="jump" data-id="${s.id}" data-n="${n}">
+        <span class="dot working"></span>
+        <span class="s-main">${head(s)}<span class="s-l2 act">${actHTML(s.act)}</span></span>
+        <span class="s-side">${timeSpan(s, 'dur')}<span class="ticks" title="Last tool calls · blue = file edits">${ticksHTML(s)}</span></span>${kbd}</button>`;
+    if (s.state === 'done') return `<button class="srow done ${s.unread ? 'unread' : ''}" data-act="jump" data-id="${s.id}" data-n="${n}">
+        <span class="dot done"></span>
+        <span class="s-main">${head(s)}<span class="s-l2">${esc(s.recap.text)}</span>
+          <span class="s-l3"><span>${s.recap.files} file${s.recap.files === 1 ? '' : 's'}</span><span class="add">+${s.recap.add}</span><span class="del">−${s.recap.del}</span><span>· took ${dur(s.recap.took)}</span></span></span>
+        <span class="s-side">${timeSpan(s, 'ago')}</span>${kbd}</button>`;
+    if (s.state === 'error') return `<button class="srow" data-act="jump" data-id="${s.id}" data-n="${n}">
+        <span class="dot error"></span>
+        <span class="s-main">${head(s)}<span class="s-l2 errtext">${esc(s.err)}</span><span class="s-l3">Open VS Code to retry</span></span>
+        <span class="s-side">${timeSpan(s, 'ago')}</span>${kbd}</button>`;
+    return `<button class="srow" data-act="jump" data-id="${s.id}" data-n="${n}">
+        <span class="dot idle"></span>
+        <span class="s-main">${head(s)}<span class="s-l2">Waiting for your next prompt</span></span>
+        <span class="s-side">${timeSpan(s, 'ago')}</span>${kbd}</button>`;
+  }
+
+  function renderBoard() {
+    const order = ordered();
+    const g = st => order.filter(s => s.state === st);
+    const asks = g('ask'), errs = g('error'), working = g('working'), done = g('done'), idle = g('idle');
+    let n = 0;
+    const num = () => (++n <= 9 ? n : '');
+    const group = (title, list, html, cls = '') => `<div class="g-title ${cls}"><span>${title}</span><span>${list.length}</span></div>${html}`;
+    let h = '';
+    if (asks.length) h += group('Needs you', asks, asks.map((s, i) => askHTML(s, num(), i === 0)).join(''), 'ask');
+    else h += `<div class="g-title"><span>Needs you</span><span>0</span></div><div class="allclear"><span class="dot done"></span>Nothing needs you right now.</div>`;
+    if (errs.length) h += group('Stopped', errs, errs.map(s => rowHTML(s, num())).join(''));
+    if (working.length) h += group('Working', working, working.map(s => rowHTML(s, num())).join(''));
+    if (done.length) h += group('Done', done, done.map(s => rowHTML(s, num())).join(''));
+    if (idle.length) {
+      h += `<button class="idle-toggle" data-act="toggle-idle" aria-expanded="${idleOpen}"><span class="dot idle"></span>${idle.length} idle · ${idle.map(s => s.p.key).join(', ')}<svg class="ic chev"><use href="#i-chev"/></svg></button>`;
+      if (idleOpen) h += idle.map(s => rowHTML(s, num())).join('');
+    }
+    const st = board.scrollTop;
+    board.innerHTML = h;
+    board.scrollTop = st;
+  }
+
+  function updateActivity(s) {
+    if (popOpen && !settingsOpen) {
+      const row = board.querySelector(`.srow[data-id="${s.id}"]`);
+      if (row) { $('.act', row).innerHTML = actHTML(s.act); $('.ticks', row).innerHTML = ticksHTML(s); }
+    }
+    updateWindow(s);
+  }
+
+  function refreshTimes() { $$('[data-since]', pop).forEach(el => { el.textContent = fmt(el.dataset.fmt, +el.dataset.since); }); }
+
+  const fmtHM = sec => `${Math.floor(sec / 3600)}h ${String(Math.floor(sec % 3600 / 60)).padStart(2, '0')}m`;
+  function renderMeta() {
+    $('#summary').textContent = summaryText();
+    $('#today').textContent = `Today · ${sessionsToday} sessions · ${fmtHM(claudeSecs)} of Claude work`;
+  }
+
+  function render() {
+    renderTray();
+    renderFloaters();
+    if (popOpen && !settingsOpen) renderBoard();
+    renderMeta();
+    sessions.forEach(updateWindow);
+  }
+
+  // ───────── popover ─────────
+  function positionCoach() {
+    const d = desktop.getBoundingClientRect(), t = tray.getBoundingClientRect();
+    const cr = Math.max(8, d.right - t.right - 8);
+    coach.style.right = cr + 'px';
+    coach.style.setProperty('--arrow-right', Math.max(10, d.right - t.right - cr + t.width / 2 - 6) + 'px');
+  }
+  // under the menu bar item, or beside whichever floating light opened it
+  function positionPop() {
+    const d = desktop.getBoundingClientRect(), a = popAnchor.getBoundingClientRect(), w = pop.offsetWidth, M = 8;
+    const floor = d.height - 64; // keep clear of the demo bar
+    const clampX = x => Math.max(M, Math.min(x, d.width - w - M));
+    Object.assign(pop.style, { right: 'auto', bottom: 'auto', maxHeight: '' });
+    if (popAnchor === tray) {
+      Object.assign(pop.style, { left: clampX(a.right - d.left + 6 - w) + 'px', top: '33px', transformOrigin: 'top right' });
+    } else if (popAnchor.classList.contains('vertical')) {
+      pop.style.maxHeight = (floor - 36) + 'px';
+      const h = pop.offsetHeight;
+      const top = Math.max(36, Math.min(a.top - d.top + a.height / 2 - h / 2, floor - h));
+      const left = a.left - d.left > w + 16 ? a.left - d.left - w - 8 : a.right - d.left + 8;
+      Object.assign(pop.style, { left: clampX(left) + 'px', top: top + 'px', transformOrigin: 'center' });
+    } else {
+      const below = floor - (a.bottom - d.top) - 8, above = a.top - d.top - 44;
+      const left = clampX(a.left + a.width / 2 - d.left - w / 2) + 'px';
+      if (below >= 420 || below >= above) Object.assign(pop.style, { left, top: (a.bottom - d.top + 8) + 'px', maxHeight: below + 'px', transformOrigin: 'top center' });
+      else Object.assign(pop.style, { left, top: 'auto', bottom: (d.bottom - a.top + 8) + 'px', maxHeight: above + 'px', transformOrigin: 'bottom center' });
+    }
+  }
+  function openPop(anchor = tray) {
+    popOpen = true;
+    popAnchor = anchor;
+    pop.dataset.open = 'true';
+    tray.setAttribute('aria-expanded', String(anchor === tray));
+    showView('board');
+    positionPop();
+    hideCoach();
+    $$('.banner', bannersEl).forEach(dismiss);
+  }
+  function closePop() {
+    popOpen = false; settingsOpen = false;
+    pop.dataset.open = 'false';
+    tray.setAttribute('aria-expanded', 'false');
+  }
+  function showView(v) {
+    settingsOpen = v === 'settings';
+    $('#v-board').hidden = settingsOpen;
+    $('#v-settings').hidden = !settingsOpen;
+    if (settingsOpen) { syncPrefsUI(); refreshFootprint(); } else render();
+  }
+  function hideCoach() { if (!coachShown) return; coachShown = false; coach.hidden = true; desktop.classList.remove('has-coach'); }
+
+  tray.addEventListener('click', () => {
+    if (now() - lastDragEnd < 300) return;
+    popOpen && popAnchor === tray ? closePop() : openPop(tray);
+  });
+  tray.addEventListener('pointerdown', e => { if (prefs.place === 'menubar') beginPress(e, { kind: 'tear' }); });
+  $('#open-settings').addEventListener('click', () => showView('settings'));
+  $('#close-settings').addEventListener('click', () => showView('board'));
+
+  document.addEventListener('pointerdown', e => {
+    if (!popOpen) return;
+    if (e.target.closest('#pop, #tray, #demo-bar, .pill, .solo')) return;
+    closePop();
+  });
+
+  board.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]');
+    if (!b) return;
+    if (b.dataset.act === 'toggle-idle') { idleOpen = !idleOpen; renderBoard(); return; }
+    const s = byId(b.closest('[data-id]').dataset.id);
+    if (b.dataset.act === 'jump') jump(s); else resolveAsk(s, b.dataset.act);
+  });
+
+  // ───────── floating lights ─────────
+  function statusText(s) {
+    if (s.state === 'working') return VERB[s.act.tool] ? `${VERB[s.act.tool]} ${base(s.act.text)}` : s.act.text;
+    if (s.state === 'ask') return s.ask.kind === 'permission' ? `wants to run ${s.ask.cmd}` : 'asked you something';
+    if (s.state === 'done') return `done · ${s.recap.text}`;
+    if (s.state === 'error') return s.err;
+    return 'idle';
+  }
+  const urgent = s => s.state === 'ask' || s.state === 'error';
+
+  function renderFloaters() {
+    if (pill) {
+      const list = ordered().filter(s => !solos[s.id]);
+      syncLights($('.pill-lights', pill), list, true);
+      pill.classList.toggle('dim', prefs.dim && !list.some(urgent));
+    }
+    Object.entries(solos).forEach(([id, el]) => {
+      const s = byId(id), pip = el.firstElementChild;
+      if (pip.className !== 'pip ' + s.state) pip.className = 'pip ' + s.state;
+      el.classList.toggle('dim', prefs.dim && !urgent(s));
+    });
+  }
+
+  function place(el, x, y) {
+    const W = floatersEl.clientWidth, H = floatersEl.clientHeight;
+    el.style.left = Math.max(4, Math.min(x, W - el.offsetWidth - 4)) + 'px';
+    el.style.top = Math.max(4, Math.min(y, H - el.offsetHeight - 4)) + 'px';
+  }
+
+  // magnetic edges; the strip turns vertical along the left/right edge, but not in corners
+  function snap(el) {
+    const W = floatersEl.clientWidth, H = floatersEl.clientHeight, M = 10, Z = 32;
+    const sideX = el.offsetLeft < Z ? 'l' : el.offsetLeft + el.offsetWidth > W - Z ? 'r' : '';
+    const sideY = el.offsetTop < Z || el.offsetTop + el.offsetHeight > H - Z;
+    if (el === pill) pill.classList.toggle('vertical', !!sideX && !sideY);
+    let x = el.offsetLeft, y = el.offsetTop;
+    const w = el.offsetWidth, h = el.offsetHeight;
+    if (sideX === 'l') x = M; else if (sideX === 'r') x = W - w - M;
+    if (y < Z) y = M; else if (y + h > H - Z) y = H - h - M;
+    place(el, x, y);
+  }
+
+  function ensurePill() {
+    if (pill) return;
+    pill = document.createElement('div');
+    pill.className = 'pill';
+    pill.tabIndex = 0;
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('aria-label', 'Pilotlight. Click to open the board, drag to move.');
+    pill.innerHTML = '<span class="grip"><svg class="ic"><use href="#i-flame"/></svg></span><span class="pill-lights"></span>';
+    pill.addEventListener('pointerdown', e => {
+      const light = e.target.closest('.light');
+      beginPress(e, light ? { kind: 'light', sid: light.dataset.id } : { kind: 'pill', el: pill });
+    });
+    pill.addEventListener('click', () => {
+      if (now() - lastDragEnd < 300) return;
+      popOpen && popAnchor === pill ? closePop() : openPop(pill);
+    });
+    pill.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); pill.click(); } });
+    floatersEl.appendChild(pill);
+    renderFloaters();
+    place(pill, floatersEl.clientWidth, 0);
+    snap(pill);
+  }
+
+  function makeSolo(sid) {
+    const el = document.createElement('div');
+    el.className = 'solo';
+    el.dataset.id = sid;
+    el.tabIndex = 0;
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', `${byId(sid).p.key}. Click to open, drag to move.`);
+    el.innerHTML = '<span class="pip"></span>';
+    const open = () => {
+      const s = byId(sid);
+      s.state === 'ask' && s.ask.kind === 'permission' && !s.ask.handedOff ? openPop(el) : jump(s);
+    };
+    el.addEventListener('pointerdown', e => beginPress(e, { kind: 'solo', el, sid }));
+    el.addEventListener('click', () => { if (now() - lastDragEnd >= 300) open(); });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.stopPropagation(); open(); } });
+    floatersEl.appendChild(el);
+    solos[sid] = el;
+    renderFloaters();
+    return el;
+  }
+  function removeSolo(sid) {
+    if (popOpen && popAnchor === solos[sid]) closePop();
+    solos[sid].remove();
+    delete solos[sid];
+    renderFloaters();
+  }
+
+  function setPlace(v) {
+    prefs.place = v;
+    if (v === 'floating') {
+      ensurePill();
+      if (!tornOnce) { tornOnce = true; toast('Pull a light out to pin one session · drop on the menu bar to dock'); }
+    } else if (pill) {
+      Object.keys(solos).forEach(removeSolo);
+      if (popOpen && popAnchor === pill) closePop();
+      pill.remove();
+      pill = null;
+    }
+    hideCoach();
+    if (settingsOpen) syncPrefsUI();
+    render();
+  }
+
+  function beginPress(e, info) {
+    if (e.button !== 0) return;
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}
+    drag = { ...info, x0: e.clientX, y0: e.clientY, moved: false };
+    window.addEventListener('pointermove', onDragMove);
+    window.addEventListener('pointerup', onDragEnd, { once: true });
+  }
+  function startDrag() {
+    drag.moved = true;
+    hidePeek();
+    if (popOpen) closePop();
+    if (drag.kind === 'tear') {
+      setPlace('floating');
+      Object.assign(drag, { el: pill, dx: 14, dy: pill.offsetHeight / 2 });
+    } else if (drag.kind === 'light') {
+      Object.assign(drag, { kind: 'solo', el: makeSolo(drag.sid), dx: 15, dy: 15 });
+    } else {
+      const r = drag.el.getBoundingClientRect();
+      Object.assign(drag, { dx: drag.x0 - r.left, dy: drag.y0 - r.top });
+    }
+    dockHint.textContent = drag.el === pill ? 'Drop on the menu bar to dock' : 'Drop on the strip or the menu bar to put it back';
+    desktop.classList.add('dragging-lights');
+    drag.el.classList.add('dragging');
+  }
+  function dropTarget(e, el) {
+    if (e.clientY <= menubar.getBoundingClientRect().bottom + 4) return 'menubar';
+    if (pill && el !== pill) {
+      const r = pill.getBoundingClientRect();
+      if (e.clientX > r.left - 12 && e.clientX < r.right + 12 && e.clientY > r.top - 12 && e.clientY < r.bottom + 12) return 'pill';
+    }
+    return null;
+  }
+  function onDragMove(e) {
+    if (!drag) return;
+    if (!drag.moved) {
+      if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 5) return;
+      startDrag();
+    }
+    const f = floatersEl.getBoundingClientRect(), t = dropTarget(e, drag.el);
+    place(drag.el, e.clientX - f.left - drag.dx, e.clientY - f.top - drag.dy);
+    menubar.classList.toggle('drop-on', t === 'menubar');
+    if (pill) pill.classList.toggle('drop-on', t === 'pill');
+  }
+  function onDragEnd(e) {
+    window.removeEventListener('pointermove', onDragMove);
+    const d = drag;
+    drag = null;
+    if (!d || !d.moved) return;
+    lastDragEnd = now();
+    const t = dropTarget(e, d.el);
+    d.el.classList.remove('dragging');
+    desktop.classList.remove('dragging-lights');
+    menubar.classList.remove('drop-on');
+    if (pill) pill.classList.remove('drop-on');
+    if (d.el === pill) {
+      if (t === 'menubar') { setPlace('menubar'); toast('Docked back in the menu bar'); }
+      else snap(pill);
+    } else if (t) {
+      removeSolo(d.sid);
+      toast(`${byId(d.sid).p.key} is back with the others`);
+    } else {
+      snap(d.el);
+    }
+  }
+
+  function hidePeek() { peek.hidden = true; }
+  floatersEl.addEventListener('pointerover', e => {
+    const t = e.target.closest('.light, .solo');
+    if (!t || drag) return;
+    const s = byId(t.dataset.id);
+    peek.innerHTML = `<b>${esc(s.p.key)}</b> · ${esc(statusText(s))}`;
+    peek.hidden = false;
+    peek.className = 'peek';
+    const d = desktop.getBoundingClientRect(), r = t.getBoundingClientRect(), w = peek.offsetWidth;
+    let x, y;
+    if (t.closest('.vertical')) {
+      const toLeft = r.left - d.left > w + 16;
+      peek.classList.add(toLeft ? 'to-left' : 'to-right');
+      x = toLeft ? r.left - d.left - 8 : r.right - d.left + 8;
+      y = r.top + r.height / 2 - d.top;
+    } else {
+      const below = r.top - d.top < 72;
+      if (below) peek.classList.add('below');
+      x = Math.max(w / 2 + 6, Math.min(r.left + r.width / 2 - d.left, d.width - w / 2 - 6));
+      y = below ? r.bottom - d.top + 6 : r.top - d.top - 6;
+    }
+    peek.style.left = x + 'px';
+    peek.style.top = y + 'px';
+  });
+  floatersEl.addEventListener('pointerout', e => { if (e.target.closest('.light, .solo')) hidePeek(); });
+
+  // ───────── settings ─────────
+  function syncPrefsUI() {
+    $$('[data-pref]', $('#settings')).forEach(el => {
+      const k = el.dataset.pref;
+      if (el.classList.contains('switch')) el.setAttribute('aria-checked', String(!!prefs[k]));
+      else $$('button', el).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === prefs[k])));
+    });
+  }
+  function refreshFootprint() { $('#fp-mem').textContent = (16.6 + sessions.length * .35 + Math.random() * .2).toFixed(1) + ' MB'; }
+
+  $('#settings').addEventListener('click', e => {
+    const sw = e.target.closest('.switch');
+    if (sw) { prefs[sw.dataset.pref] = !prefs[sw.dataset.pref]; syncPrefsUI(); render(); return; }
+    const sb = e.target.closest('.seg[data-pref] button');
+    if (sb) {
+      const k = sb.closest('.seg').dataset.pref;
+      prefs[k] = sb.dataset.v;
+      syncPrefsUI();
+      if (k === 'place') setPlace(prefs.place);
+      if (k === 'style') renderTray();
+      if (k === 'sound') chime('permission');
+      return;
+    }
+    if (e.target.closest('[data-set="repair"]')) toast('Rewrote 10 hook entries in ~/.claude/settings.json', true);
+  });
+
+  // ───────── fake VS Code windows ─────────
+  function seeded(str) {
+    let h = 2166136261;
+    for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+    return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 10000) / 10000; };
+  }
+  function codeLines(key) {
+    const r = seeded(key);
+    let out = '', indent = 0;
+    for (let i = 0; i < 24; i++) {
+      if (r() < .1) { out += '<div class="cl"></div>'; continue; }
+      if (r() < .3) indent = Math.max(0, Math.min(3, indent + (r() < .5 ? -1 : 1)));
+      let line = `<div class="cl" style="padding-left:${indent * 14}px">`;
+      const toks = 1 + Math.floor(r() * 4);
+      for (let j = 0; j < toks; j++) line += `<i style="width:${12 + Math.floor(r() * 64)}px;background:var(--tk${1 + Math.floor(r() * 5)})"></i>`;
+      out += line + '</div>';
+    }
+    return out;
+  }
+  function sideTree(p) {
+    const dirs = [...new Set(p.files.map(f => f.split('/').slice(0, -1).join('/')).filter(Boolean))];
+    return dirs.map(d => `<div class="dir">▾ ${esc(d)}</div>` + p.files.filter(f => f.startsWith(d + '/') && !f.slice(d.length + 1).includes('/')).map(f => `<div style="padding-left:12px">${esc(base(f))}</div>`).join('')).join('')
+      + p.files.filter(f => !f.includes('/')).map(f => `<div>${esc(f)}</div>`).join('');
+  }
+  const SLOTS = [[2, 4], [24, 12], [40, 21], [8, 30], [31, 35], [47, 7]];
+  function createWindow(s) {
+    const i = Object.keys(wins).length, [l, t] = SLOTS[i % SLOTS.length];
+    const w = document.createElement('div');
+    w.className = 'win';
+    w.style.left = l + '%';
+    w.style.top = t + '%';
+    w.innerHTML = `
+      <div class="win-bar"><span class="lights"><i></i><i></i><i></i></span><span class="win-title"></span></div>
+      <div class="win-body">
+        <div class="w-act"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="w-side"><div class="w-side-h">${esc(s.p.key.toUpperCase())}</div>${sideTree(s.p)}</div>
+        <div class="w-editor"><span class="w-tab"></span>${codeLines(s.p.key)}</div>
+        <div class="w-claude">
+          <div class="wc-h"><svg class="ic"><use href="#i-flame"/></svg>Claude Code</div>
+          <div class="wc-msg user"><i style="width:78%"></i><i style="width:52%"></i></div>
+          <div class="wc-msg"><i style="width:96%"></i><i style="width:88%"></i><i style="width:60%"></i></div>
+          <div class="wc-status"></div>
+          <div class="wc-input">Ask Claude…</div>
+        </div>
+      </div>`;
+    w.addEventListener('pointerdown', () => { raise(s.id); markSeen(s); });
+    w.addEventListener('click', e => {
+      const b = e.target.closest('[data-wact]');
+      if (b) resolveAsk(s, b.dataset.wact);
+    });
+    winsEl.appendChild(w);
+    wins[s.id] = w;
+    raise(s.id);
+    updateWindow(s);
+  }
+  function raise(id, flash) {
+    zOrder = zOrder.filter(x => x !== id).concat(id);
+    zOrder.forEach((x, i) => { wins[x].style.zIndex = i + 1; wins[x].classList.toggle('front', x === id); });
+    focusedId = id;
+    if (flash) { const w = wins[id]; w.classList.remove('flash'); void w.offsetWidth; w.classList.add('flash'); }
+  }
+  function updateWindow(s) {
+    const w = wins[s.id];
+    if (!w) return;
+    const f = base(s.file);
+    $('.win-title', w).textContent = `${f} — ${s.p.key}`;
+    $('.w-tab', w).textContent = f;
+    const st = $('.wc-status', w);
+    st.className = 'wc-status ' + s.state;
+    let h;
+    if (s.state === 'working') h = `<div class="wc-row"><span class="dot working"></span>Working</div><div>${esc(VERB[s.act.tool] ? `${VERB[s.act.tool]} ${base(s.act.text)}` : s.act.text)}</div>`;
+    else if (s.state === 'ask' && s.ask.kind === 'permission') h = `<div class="wc-row"><span class="dot ask"></span>Allow this ${s.ask.tool === 'Bash' ? 'command' : 'request'}?</div><code>${esc(s.ask.cmd)}</code><div class="wc-btns"><button data-wact="allow">Yes</button><button data-wact="deny">No</button></div>`;
+    else if (s.state === 'ask') h = `<div class="wc-row"><span class="dot ask"></span>Question for you</div><div>${esc(s.ask.text)}</div>`;
+    else if (s.state === 'done') h = `<div class="wc-row"><span class="dot done"></span>Done</div><div>${esc(s.recap.text)}.</div>`;
+    else if (s.state === 'error') h = `<div class="wc-row"><span class="dot error"></span>Stopped</div><div>${esc(s.err)}</div>`;
+    else h = `<div class="wc-row"><span class="dot idle"></span>Idle</div><div>Waiting for your next prompt.</div>`;
+    st.innerHTML = h;
+  }
+
+  // ───────── simulation ─────────
+  const SCRIPT = {
+    3: () => { const s = byKey('web-app'); if (s.state === 'working') setState(s, 'ask', 'permission'); },
+    12: () => { const s = byKey('mobile-app'); if (s.state === 'idle') { setState(s, 'working'); toast('mobile-app: you sent a prompt (UserPromptSubmit)'); } },
+    21: () => { const s = byKey('api-gateway'); if (s.state === 'working') setState(s, 'ask', 'question'); },
+    31: () => { const s = byKey('mobile-app'); if (s.state === 'working') setState(s, 'done'); },
+  };
+  function randomEvent() {
+    const working = sessions.filter(s => s.state === 'working');
+    const resting = sessions.filter(s => s.state === 'idle' || (s.state === 'done' && now() - s.since > 20000));
+    const asks = sessions.filter(s => s.state === 'ask').length;
+    if (!working.length || (working.length < 2 && resting.length && Math.random() < .5)) {
+      if (resting.length) setState(pick(resting), 'working');
+      return;
+    }
+    const s = pick(working), r = Math.random();
+    if (r < .45) setState(s, 'done');
+    else if (r < .68 && asks < 2) setState(s, 'ask', 'permission');
+    else if (r < .8 && asks < 2) setState(s, 'ask', 'question');
+    else if (resting.length) setState(pick(resting), 'working');
+    else setState(s, 'done');
+  }
+
+  setInterval(() => {
+    const t = now();
+    if (!paused) {
+      simT++;
+      if (SCRIPT[simT]) SCRIPT[simT]();
+      else if (simT >= nextRandom) { randomEvent(); nextRandom = simT + Math.round(rand(9, 15)); }
+      sessions.forEach(s => {
+        if (s.state === 'working') {
+          claudeSecs++;
+          if (t >= s.nextAct) {
+            s.act = activityFor(s.p);
+            s.ticks.push(tickType(s.act.tool));
+            if (s.ticks.length > 24) s.ticks.shift();
+            if (s.act.tool === 'Edit' || s.act.tool === 'Read') s.file = s.act.text;
+            s.nextAct = t + rand(1400, 3400);
+            updateActivity(s);
+          }
+        }
+        if (s.state === 'ask' && s.ask.kind === 'permission' && !s.ask.handedOff && t - s.since > 30000) {
+          s.ask.handedOff = true;
+          removeBannersFor(s.id);
+          render();
+        }
+      });
+    }
+    if (popOpen && !settingsOpen) { refreshTimes(); renderMeta(); }
+    if (popOpen && settingsOpen) refreshFootprint();
+    tickClock();
+  }, 1000);
+
+  // demo controls
+  $('#demo-bar').addEventListener('click', e => {
+    const b = e.target.closest('[data-sim]');
+    if (!b) return;
+    const kind = b.dataset.sim;
+    const notFocused = list => list.find(s => s.id !== focusedId) || list[0];
+    const working = sessions.filter(s => s.state === 'working');
+    if (kind === 'permission' || kind === 'question') {
+      const s = notFocused(working.length ? working : sessions.filter(s => s.state !== 'ask'));
+      if (!s) return toast('Every session is already waiting on you');
+      setState(s, 'ask', kind);
+    } else if (kind === 'finish' || kind === 'fail') {
+      if (!working.length) return toast('No session is working right now');
+      setState(notFocused(working), kind === 'finish' ? 'done' : 'error');
+    } else if (kind === 'new') {
+      const p = PROJECTS.find(p => !byKey(p.key));
+      if (!p) return toast('That’s every demo project');
+      const s = makeSession(p, 'working');
+      sessionsToday++;
+      render();
+      toast(`${p.key}: new session (SessionStart → UserPromptSubmit)`);
+      raise(s.id);
+    }
+  });
+  $('#pause').addEventListener('click', e => { paused = !paused; e.currentTarget.textContent = paused ? 'Resume' : 'Pause'; });
+
+  // keyboard
+  document.addEventListener('keydown', e => {
+    if (e.altKey && e.code === 'Space') { e.preventDefault(); popOpen ? closePop() : openPop(pill || tray); return; }
+    if (!popOpen) return;
+    if (e.key === 'Escape') { settingsOpen ? showView('board') : closePop(); return; }
+    if (settingsOpen || e.metaKey || e.ctrlKey) return;
+    if (/^[1-9]$/.test(e.key)) {
+      const el = board.querySelector(`[data-n="${e.key}"]`);
+      if (el) { e.preventDefault(); jump(byId(el.dataset.id)); }
+      return;
+    }
+    const first = ordered().find(s => s.state === 'ask');
+    if (!first) return;
+    const canAnswer = first.ask.kind === 'permission' && !first.ask.handedOff;
+    if (e.key === 'Enter') { e.preventDefault(); canAnswer ? resolveAsk(first, 'allow') : jump(first); }
+    else if (e.key === 'Backspace' && canAnswer) { e.preventDefault(); resolveAsk(first, 'deny'); }
+    else if ((e.key === 'a' || e.key === 'A') && canAnswer) { e.preventDefault(); resolveAsk(first, 'always'); }
+  });
+
+  // clock + theme
+  let lastMinute = -1;
+  function tickClock() {
+    const d = new Date();
+    if (d.getMinutes() === lastMinute) return;
+    lastMinute = d.getMinutes();
+    $('#clock').textContent = `${d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}  ${d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+  function setTheme(v) {
+    if (v === 'auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = v;
+    $$('#theme-seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+    try { localStorage.setItem('pilotlight-theme', v); } catch (e) {}
+  }
+  $('#theme-seg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setTheme(b.dataset.v); });
+  let savedTheme = 'auto';
+  try { savedTheme = localStorage.getItem('pilotlight-theme') || 'auto'; } catch (e) {}
+  setTheme(savedTheme);
+
+  window.addEventListener('resize', () => {
+    positionCoach();
+    [pill, ...Object.values(solos)].forEach(el => el && place(el, el.offsetLeft, el.offsetTop));
+    if (popOpen) positionPop();
+  });
+
+  // ───────── boot ─────────
+  makeSession(PROJECTS[0], 'working', 252);
+  makeSession(PROJECTS[1], 'working', 65);
+  const cs = makeSession(PROJECTS[2], 'working', 400);
+  cs.state = 'done'; cs.since = now() - 130000; cs.unread = true;
+  cs.recap = { text: PROJECTS[2].recaps[0], files: 4, add: 156, del: 9, took: 6 * 60000 + 20000 };
+  makeSession(PROJECTS[3], 'idle', 900);
+  raise(cs.id);
+  tickClock();
+  render();
+  positionCoach();
+})();
+</script>
+</body>
+</html>
